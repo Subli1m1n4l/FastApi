@@ -2,7 +2,7 @@ from typing import List
 from fastapi import FastAPI,Body, Path, Query
 from fastapi.responses import HTMLResponse,JSONResponse
 #importo paquete donde tengo la data de un diccionario de peliculas
-import data.infoMovies as im
+import DataBase.infoMovies as im
 #import paquete donde creo todos los modelos para el uso del api
 import models.Movie as Mv
 import models.identity.User as us
@@ -66,3 +66,23 @@ def update_movie(id:int,mov:Mv.Movie):
 def delete_movie(id:int):
     [(movie,im.movies.remove(movie)) for movie in im.movies if int(movie["id"])==id]
     return JSONResponse(content={"message":"Se ha eliminado la pelicula"})
+
+
+#seccion de trabajo pineda
+
+@app.get('/teams',tags=['Soccer'])
+def get_teams():
+    return ""
+
+
+@app.get('teamsCount',tags=['Soccer'])
+def teamsCount():
+    return ""
+
+@app.get('teamsChampionsCount',tags=['Soccer'])
+def teamChampionsCount(team:str):
+    return ""
+
+@app.get('teamsTotalChampionsCount',tags=['Soccer'])
+def teamsTotalChampionsCount():
+    return ""
