@@ -5,7 +5,8 @@ from fastapi.responses import HTMLResponse,JSONResponse
 import data.infoMovies as im
 #import paquete donde creo todos los modelos para el uso del api
 import models.Movie as Mv
-import models.identity.User as us 
+import models.identity.User as us
+import Security.identity as id 
 
 
 from Security.Token.jwt_manager import create_token
@@ -18,8 +19,12 @@ app.version="1.0.0"
 
 
 @app.post('/Login',tags=['Login'])
-def login(user:us.User):
-    return user
+def login(user:us.User)-> str:
+    if id.valid_user(user):
+        return JSONResponse(id.get_token(user),status_code=200)
+    else:
+        return JSONResponse("Credenciales erroneas",status_code=401)
+    
 
 
 @app.get('/',tags=['Home'])
