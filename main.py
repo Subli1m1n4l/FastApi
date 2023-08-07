@@ -12,21 +12,20 @@ import Security.identity as id
 import os
 import openai
 
+#uso paquetes para conexion a sql
+from config.database import Base, engine
+from models.Entities.movie import Movie
+
 openai.api_key = "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"
 
 
 from Security.Token.jwt_manager import create_token
 
 app= FastAPI()
-
-
-
-
-
-
-
 app.title=" Mi aplicacion con fastapi"
 app.version="1.0.0"
+
+Base.metadata.create_all(bind=engine)
 
 
 @app.post('/Login',tags=['Login'])
