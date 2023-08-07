@@ -1,17 +1,28 @@
-from typing import List
-from fastapi import FastAPI,Body, Path, Query
+from typing import Annotated, List
+from fastapi import Depends, FastAPI,Body, Path, Query
 from fastapi.responses import HTMLResponse,JSONResponse
 #importo paquete donde tengo la data de un diccionario de peliculas
 import DataBase.infoMovies as im
+from Security.JWTBearer import JWTBearer
 #import paquete donde creo todos los modelos para el uso del api
 import models.Movie as Mv
 import models.identity.User as us
 import Security.identity as id 
+#uso paquete de openIA
+import os
+import openai
+
+openai.api_key = "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"
 
 
 from Security.Token.jwt_manager import create_token
 
 app= FastAPI()
+
+
+
+
+
 
 
 app.title=" Mi aplicacion con fastapi"
@@ -27,8 +38,8 @@ def login(user:us.User)-> str:
     
 
 
-@app.get('/',tags=['Home'])
-def message():
+@app.get('/',dependencies=[Depends(JWTBearer())],tags=['Home'])
+async def message():
     return HTMLResponse('<h1>Hola Mundo </h1>')
 
 
@@ -86,3 +97,20 @@ def teamChampionsCount(team:str):
 @app.get('teamsTotalChampionsCount',tags=['Soccer'])
 def teamsTotalChampionsCount():
     return ""
+
+
+# seccion de trabajo con openIA
+
+@app.get('/chat',tags=['Chats'])
+def get_chat(mensaje:str):
+    completion = openai.ChatCompletion.create(
+    model="text-davinci-002",
+    messages=[
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": f"{mensaje}"}
+    ]
+    )
+
+
+    return HTMLResponse(f"<Body><h1>Esta es la respuesta generada por chatgpt</h1> \
+                        {completion.choices[0].message}</body>")
