@@ -19,6 +19,8 @@ from models.Entities.movie import Movie as MovieModel
 
 #uso paquete para mapper de entidades
 from automapper import mapper
+#uso middleware para manejo de errores
+from middlewares.error_handler import ErrorHandler
 
 openai.api_key = ""
 
@@ -28,7 +30,7 @@ from Security.Token.jwt_manager import create_token
 app= FastAPI()
 app.title=" Mi aplicacion con fastapi"
 app.version="1.0.0"
-
+app.add_middleware(ErrorHandler)
 Base.metadata.create_all(bind=engine)
 
 
