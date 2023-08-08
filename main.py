@@ -17,6 +17,7 @@ from middlewares.error_handler import ErrorHandler
 #importo routers
 from routers.movie import movie_router
 from routers.Autentication import aut_router
+from routers.Teams import team_router
 openai.api_key = ""
 
 
@@ -28,6 +29,7 @@ app.version="1.0.0"
 app.add_middleware(ErrorHandler)
 app.include_router(movie_router)
 app.include_router(aut_router)
+app.include_router(team_router)
 Base.metadata.create_all(bind=engine)
 PBase.metadata.create_all(bind=Pengine)
 
