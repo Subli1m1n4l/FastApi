@@ -4,21 +4,18 @@ from fastapi.responses import HTMLResponse,JSONResponse
 #importo paquete donde tengo la data de un diccionario de peliculas
 from Security.JWTBearer import JWTBearer
 
-import models.identity.User as us
-import Security.identity as id 
+
 #uso paquete de openIA
 import openai
-
 #uso paquetes para conexion a sql
 from config.database import Base, engine
-
-
 #uso paquete para mapper de entidades
 from automapper import mapper
 #uso middleware para manejo de errores
 from middlewares.error_handler import ErrorHandler
 #importo routers
 from routers.movie import movie_router
+from routers.Autentication import aut_router
 openai.api_key = ""
 
 
@@ -29,15 +26,11 @@ app.title=" Mi aplicacion con fastapi"
 app.version="1.0.0"
 app.add_middleware(ErrorHandler)
 app.include_router(movie_router)
+app.include_router(aut_router)
 Base.metadata.create_all(bind=engine)
 
 
-@app.post('/Login',tags=['Login'])
-def login(user:us.User)-> str:
-    if id.valid_user(user):
-        return JSONResponse(id.get_token(user),status_code=200)
-    else:
-        return JSONResponse("Credenciales erroneas",status_code=401)
+
     
 
 
