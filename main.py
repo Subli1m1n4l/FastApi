@@ -9,6 +9,7 @@ from Security.JWTBearer import JWTBearer
 import openai
 #uso paquetes para conexion a sql
 from config.database import Base, engine
+from config.dbPostgres import PBase,Pengine
 #uso paquete para mapper de entidades
 from automapper import mapper
 #uso middleware para manejo de errores
@@ -28,6 +29,7 @@ app.add_middleware(ErrorHandler)
 app.include_router(movie_router)
 app.include_router(aut_router)
 Base.metadata.create_all(bind=engine)
+PBase.metadata.create_all(bind=Pengine)
 
 
 

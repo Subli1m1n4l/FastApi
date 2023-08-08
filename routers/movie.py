@@ -7,7 +7,9 @@ from models.Entities.movie import Movie as MovieModel
 from typing import  List
 
 #uso paquetes para conexion a sql
-from config.database import Base, Session, engine
+from config.database import Session
+#Uso paquete de servicios para transacciones
+from Services.movie import MovieService
 
 movie_router = APIRouter()
 
@@ -15,7 +17,7 @@ movie_router = APIRouter()
 @movie_router.get('/movies',tags=['movies'],response_model=List[Movie],status_code=200)
 def Movies() -> List[Movie]:
     db = Session()
-    result= db.query(MovieModel).all()
+    result= MovieService(db).get_movies()
     return JSONResponse(status_code=200,content=jsonable_encoder(result))
 
     
@@ -24,7 +26,7 @@ def Movies() -> List[Movie]:
 @movie_router.get('/movies/{id}',tags=['movies'],response_model=Movie,status_code=200)
 def get_movie(id:int=Path(ge=1,le=2000)):
     db= Session()
-    result = db.query(MovieModel).filter(MovieModel.id == id).first()
+    result = MovieService(db).get_movie(id=id)
     if not result:
         return JSONResponse(status_code=404,content={'message':'No encontrado'})
     return JSONResponse(status_code=200,content=jsonable_encoder(result))
@@ -43,6 +45,7 @@ def create_movie(movie:Movie):
     new_movie=MovieModel(**movie.model_dump())
     db.add(new_movie)
     db.commit()
+
     
 
     return JSONResponse(content={"message":"Se ha agregado la pelicula"})
