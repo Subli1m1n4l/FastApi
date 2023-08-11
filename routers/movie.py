@@ -42,10 +42,8 @@ def get_movies_by_category(category:str=Query(min_length=2, max_length=100),year
 @movie_router.post('/movies',tags=['movies'])
 def create_movie(movie:Movie):
     db= Session()
-    new_movie=MovieModel(**movie.model_dump())
-    db.add(new_movie)
-    db.commit()
-
+    MovieService(db).create_movie(movie=movie)
+    return JSONResponse(status_code=200,content='{"message":"registro creado"}')
     
 
     return JSONResponse(content={"message":"Se ha agregado la pelicula"})
@@ -53,16 +51,11 @@ def create_movie(movie:Movie):
 @movie_router.put('/movies',tags=['movies'])
 def update_movie(id:int,mov:Movie):
     db= Session()
-    result = db.query(MovieModel).filter(MovieModel.id == id).first()
+    result = MovieService(db).get_movie(id)
     if not result:
         return JSONResponse(status_code=404,content={'message':'No encontrado'})
     
-    result.title= mov.title
-    result.overview=mov.overview
-    result.year= mov.year
-    result.rating=mov.rating
-    result.category=mov.category
-    db.commit()
+    MovieService(db).update_movie(id,mov)
     return JSONResponse(content={"message":"Se ha actualizado la pelicula"})
 
     
@@ -70,10 +63,9 @@ def update_movie(id:int,mov:Movie):
 @movie_router.delete('/movies',tags=['movies'])
 def delete_movie(id:int):
     db= Session()
-    result = db.query(MovieModel).filter(MovieModel.id == id).first()
+    result = MovieService(db).get_movie(id)
     if not result:
         return JSONResponse(status_code=404,content={'message':'No encontrado'})
     
-    db.delete(result)
-    db.commit()
+    MovieService(db).delete_movie(id)
     return JSONResponse(content={"message":"Se ha eliminado la pelicula"})
