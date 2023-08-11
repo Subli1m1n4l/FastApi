@@ -7,6 +7,5 @@ def create_token(data:dict):
     return token
 
 def validate_token(token:str)->dict:
-    print(token)
     data:dict=decode(token,key=key_secret,algorithms=['HS256'])
     return data
